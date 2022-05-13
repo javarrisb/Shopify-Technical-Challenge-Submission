@@ -24,7 +24,7 @@ Inventory.init(
             type: DataTypes.DECIMAL,
             allowNull: false,
             validate: {
-                isDecimal: trueprice
+                isDecimal: true
             }
         },
         stock: {
