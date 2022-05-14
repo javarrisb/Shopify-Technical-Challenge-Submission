@@ -56,7 +56,7 @@ router.post('/', (req, res) => {
         });
 });
 
-// Edit inventory
+// Update inventory
 router.put('/:id', (req, res) => {
     Inventory.update(req.body, {
         where: {
