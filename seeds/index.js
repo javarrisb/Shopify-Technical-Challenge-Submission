@@ -1,5 +1,7 @@
 const seedLocation = require('./location-seeds');
 const seedInventory = require('./inventory-seeds');
+const seedTags = require('./tag-seeds');
+const seedInventoryTags = require('./inventory-tag-seeds');
 
 const sequelize = require('../config/connection');
 
@@ -11,6 +13,12 @@ const seedAll = async () => {
 
     await seedInventory();
     console.log('\n----- INVENTORY SEEDED -----\n');
+
+    await seedTags();
+    console.log('\n----- TAGS SEEDED -----\n');
+
+    await seedInventoryTags();
+    console.log('\n----- INVENTORY TAGS SEEDED -----\n');
 
     process.exit(0);
 };
