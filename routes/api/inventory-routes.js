@@ -51,8 +51,10 @@ router.get('/:id', (req, res) => {
 // create new inventory
 router.post('/', (req, res) => {
     Inventory.create(req.body)
-        .then((inventory) => {
-            res.status(200).json(inventory);
+        .then(dbInventoryData => res.json(dbInventoryData))
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
         });
 });
 
@@ -63,33 +65,16 @@ router.put('/:id', (req, res) => {
             id: req.params.id,
         },
     })
-        .then((inventory) => {
-            return InventoryTag.findAll({ where: { inventory_id: req.params.id } });
+        .then(dbInventoryData => {
+            if (!dbInventoryData) {
+                res.status(404).json({ message: 'No post was found with this id' });
+                return;
+            }
+            res.json(dbInventoryData);
         })
-        .then((inventoryTags) => {
-            // get list of current tag_ids
-            const inventoryTagIds = inventoryTags.map(({ tag_id }) => tag_id);
-            const newInventoryTags = req.body.tagIds
-                .filter((tag_id) => !inventoryTagIds.includes(tag_id))
-                .map((tag_id) => {
-                    return {
-                        inventory_id: req.params.id,
-                        tag_id,
-                    };
-                });
-            const inventoryTagsToRemove = inventoryTags
-                .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
-                .map(({ id }) => id);
-
-            // run both actions
-            return Promise.all([
-                InventoryTag.destroy({ where: { id: inventoryTagsToRemove } }),
-                InventoryTag.bulkCreate(newInventoryTags),
-            ]);
-        })
-        .then((updatedInventoryTags) => res.json(updatedInventoryTags))
-        .catch((err) => {
-            res.status(400).json(err);
+        .catch(err => {
+            console.log(err);
+            res.status(500).json(err);
         });
 });
 
