@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Inventory, Location } = require('../../models');
+const { Inventory, Location, Tag, InventoryTag } = require('../../models');
 
 // Endpoints for `/api/inventory`
 
@@ -62,7 +62,35 @@ router.put('/:id', (req, res) => {
         where: {
             id: req.params.id,
         },
-    });
+    })
+        .then((inventory) => {
+            return InventoryTag.findAll({ where: { inventory_id: req.params.id } });
+        })
+        .then((inventoryTags) => {
+            // get list of current tag_ids
+            const inventoryTagIds = inventoryTags.map(({ tag_id }) => tag_id);
+            const newInventoryTags = req.body.tagIds
+                .filter((tag_id) => !inventoryTagIds.includes(tag_id))
+                .map((tag_id) => {
+                    return {
+                        inventory_id: req.params.id,
+                        tag_id,
+                    };
+                });
+            const inventoryTagsToRemove = inventoryTags
+                .filter(({ tag_id }) => !req.body.tagIds.includes(tag_id))
+                .map(({ id }) => id);
+
+            // run both actions
+            return Promise.all([
+                InventoryTag.destroy({ where: { id: inventoryTagsToRemove } }),
+                InventoryTag.bulkCreate(newInventoryTags),
+            ]);
+        })
+        .then((updatedInventoryTags) => res.json(updatedInventoryTags))
+        .catch((err) => {
+            res.status(400).json(err);
+        });
 });
 
 // delete inventory

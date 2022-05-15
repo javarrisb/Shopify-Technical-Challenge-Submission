@@ -14,7 +14,7 @@ Location.hasMany(Inventory, {
     foreignKey: 'inventory_id'
 });
 
-Inventory.belondsToMany(Tag, {
+Inventory.belongsToMany(Tag, {
     through: InventoryTag,
     as: 'tag_id',
     foreignKey: 'product_id'
@@ -30,5 +30,5 @@ module.exports = {
     Inventory,
     Location,
     Tag,
-    ProductTag,
+    InventoryTag,
 };
