@@ -13,5 +13,9 @@
 # Usage 
 
 - To use this app, run 'npm run seed' to seed the database and 'npm run start' to start the application
-- Here is a walkthrough of the application and how it works: 
+- Here is a walkthrough of the application and how it works: https://www.youtube.com/watch?v=u9EXjPE0k1g
+
+# Contributions
+
+- Made with 🧡 by Javarris Barnett
 
