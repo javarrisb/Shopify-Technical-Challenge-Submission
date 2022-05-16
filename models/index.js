@@ -26,9 +26,10 @@ Tag.belongsToMany(Inventory, {
     foreignKey: 'tag_id'
 });
 
+
 module.exports = {
     Inventory,
     Location,
     Tag,
-    InventoryTag,
+    InventoryTag
 };
